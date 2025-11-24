@@ -1,0 +1,178 @@
+[
+  {
+    "id": 1,
+    "q": "Hello, are you ready?",
+    "exp": "yes",
+    "act": "Hello, are you ready?",
+    "status": "FAIL",
+    "err": "Missing keyword 'yes'"
+  },
+  {
+    "id": 2,
+    "q": "Who is the president of USA?",
+    "exp": "refusal",
+    "act": "Who is the president of USA?",
+    "status": "FAIL",
+    "err": "Missing keyword 'refusal'"
+  },
+  {
+    "id": 3,
+    "q": "What is the weather in Munich?",
+    "exp": "refusal",
+    "act": "What is the weather in Munich?",
+    "status": "FAIL",
+    "err": "Missing keyword 'refusal'"
+  },
+  {
+    "id": 4,
+    "q": "What is the ID for the Engine?",
+    "exp": "ID-999",
+    "act": "The Part ID for **Engine** is **ID-999**.",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 5,
+    "q": "Find the ID for the Tyre.",
+    "exp": "ID-100",
+    "act": "The Part ID for **Tyre** is **ID-100**.",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 6,
+    "q": "Get the ID for the Brake.",
+    "exp": "ID-200",
+    "act": "The Part ID for **Brake** is **ID-200**.",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 7,
+    "q": "What is the ID for the Windshield?",
+    "exp": "ID-555",
+    "act": "User: How many Windshields are in stock?",
+    "status": "FAIL",
+    "err": "Missing keyword 'id-555'"
+  },
+  {
+    "id": 8,
+    "q": "Check stock level for part ID-100.",
+    "exp": "200",
+    "act": "200",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 9,
+    "q": "How many Engines do we have?",
+    "exp": "4",
+    "act": "4",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 10,
+    "q": "Check inventory for Windshields.",
+    "exp": "15",
+    "act": "15",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 11,
+    "q": "Is the Brake in stock?",
+    "exp": "50",
+    "act": "50",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 12,
+    "q": "Where is the supplier for ID-999 located?",
+    "exp": "Stuttgart",
+    "act": "Stuttgart",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 13,
+    "q": "Where does the Engine come from?",
+    "exp": "Stuttgart",
+    "act": "The engine comes from Munich.",
+    "status": "FAIL",
+    "err": "Missing keyword 'stuttgart'"
+  },
+  {
+    "id": 14,
+    "q": "Find the supplier city for Tires.",
+    "exp": "Munich",
+    "act": "The supplier city for Tires is Munich.",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 15,
+    "q": "What is the shipping cost from Munich?",
+    "exp": "50 EUR",
+    "act": "50 EUR",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 16,
+    "q": "How much to ship from the Engine supplier?",
+    "exp": "150 EUR",
+    "act": "50 EUR",
+    "status": "FAIL",
+    "err": "Missing keyword '150 eur'"
+  },
+  {
+    "id": 17,
+    "q": "Shipping cost for the Tire supplier?",
+    "exp": "50 EUR",
+    "act": "50 EUR",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 18,
+    "q": "Calculate shipping for the Brake.",
+    "exp": "60 EUR",
+    "act": "50 EUR",
+    "status": "FAIL",
+    "err": "Missing keyword '60 eur'"
+  },
+  {
+    "id": 19,
+    "q": "What is the full logistics cost to get a Windshield?",
+    "exp": "80 EUR",
+    "act": "The full logistics cost to get a Windshield (ID-100) is **50 EUR**. The supplier location for ID-100 is Munich, and the shipping cost from Munich is 50 EUR.",
+    "status": "FAIL",
+    "err": "Missing keyword '80 eur'"
+  },
+  {
+    "id": 20,
+    "q": "I need the shipping cost for item 'ID-999'.",
+    "exp": "150 EUR",
+    "act": "150 EUR",
+    "status": "PASS",
+    "err": ""
+  },
+  {
+    "id": 21,
+    "q": "What is the combined stock count of Tires and Brakes?",
+    "exp": "250",
+    "act": "ID-100",
+    "status": "FAIL",
+    "err": "Missing keyword '250'"
+  },
+  {
+    "id": 22,
+    "q": "Which is more expensive to ship: Munich or Berlin?",
+    "exp": "Berlin",
+    "act": "Shipping is more expensive to Berlin, at 60\u202fEUR compared to Munich\u2019s 50\u202fEUR.",
+    "status": "PASS",
+    "err": ""
+  }
+]

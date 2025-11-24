@@ -1,0 +1,209 @@
+[
+    {
+        "id": 1,
+        "q": "Hello, are you ready?",
+        "hops": 0,
+        "expected": "yes"
+    },
+    {
+        "id": 2,
+        "q": "Who is the president of USA?",
+        "hops": 0,
+        "expected": "refusal"
+    },
+    {
+        "id": 3,
+        "q": "What is the weather in Munich?",
+        "hops": 0,
+        "expected": "refusal"
+    },
+    {
+        "id": 4,
+        "q": "What is the ID for the Engine?",
+        "hops": 1,
+        "chain": [
+            "get_part_id"
+        ],
+        "expected": "ID-999"
+    },
+    {
+        "id": 5,
+        "q": "Find the ID for the Tyre.",
+        "hops": 1,
+        "chain": [
+            "get_part_id"
+        ],
+        "expected": "ID-100"
+    },
+    {
+        "id": 6,
+        "q": "Get the ID for the Brake.",
+        "hops": 1,
+        "chain": [
+            "get_part_id"
+        ],
+        "expected": "ID-200"
+    },
+    {
+        "id": 7,
+        "q": "What is the ID for the Windshield?",
+        "hops": 1,
+        "chain": [
+            "get_part_id"
+        ],
+        "expected": "ID-555"
+    },
+    {
+        "id": 8,
+        "q": "Check stock level for part ID-100.",
+        "hops": 1,
+        "chain": [
+            "get_stock_level"
+        ],
+        "expected": "200"
+    },
+    {
+        "id": 9,
+        "q": "How many Engines do we have?",
+        "hops": 2,
+        "chain": [
+            "get_part_id",
+            "get_stock_level"
+        ],
+        "expected": "4"
+    },
+    {
+        "id": 10,
+        "q": "Check inventory for Windshields.",
+        "hops": 2,
+        "chain": [
+            "get_part_id",
+            "get_stock_level"
+        ],
+        "expected": "15"
+    },
+    {
+        "id": 11,
+        "q": "Is the Brake in stock?",
+        "hops": 2,
+        "chain": [
+            "get_part_id",
+            "get_stock_level"
+        ],
+        "expected": "50"
+    },
+    {
+        "id": 12,
+        "q": "Where is the supplier for ID-999 located?",
+        "hops": 1,
+        "chain": [
+            "get_supplier_location"
+        ],
+        "expected": "Stuttgart"
+    },
+    {
+        "id": 13,
+        "q": "Where does the Engine come from?",
+        "hops": 2,
+        "chain": [
+            "get_part_id",
+            "get_supplier_location"
+        ],
+        "expected": "Stuttgart"
+    },
+    {
+        "id": 14,
+        "q": "Find the supplier city for Tires.",
+        "hops": 2,
+        "chain": [
+            "get_part_id",
+            "get_supplier_location"
+        ],
+        "expected": "Munich"
+    },
+    {
+        "id": 15,
+        "q": "What is the shipping cost from Munich?",
+        "hops": 1,
+        "chain": [
+            "get_shipping_cost"
+        ],
+        "expected": "50 EUR"
+    },
+    {
+        "id": 16,
+        "q": "How much to ship from the Engine supplier?",
+        "hops": 3,
+        "chain": [
+            "get_part_id",
+            "get_supplier_location",
+            "get_shipping_cost"
+        ],
+        "expected": "150 EUR"
+    },
+    {
+        "id": 17,
+        "q": "Shipping cost for the Tire supplier?",
+        "hops": 3,
+        "chain": [
+            "get_part_id",
+            "get_supplier_location",
+            "get_shipping_cost"
+        ],
+        "expected": "50 EUR"
+    },
+    {
+        "id": 18,
+        "q": "Calculate shipping for the Brake.",
+        "hops": 3,
+        "chain": [
+            "get_part_id",
+            "get_supplier_location",
+            "get_shipping_cost"
+        ],
+        "expected": "60 EUR"
+    },
+    {
+        "id": 19,
+        "q": "What is the full logistics cost to get a Windshield?",
+        "hops": 3,
+        "chain": [
+            "get_part_id",
+            "get_supplier_location",
+            "get_shipping_cost"
+        ],
+        "expected": "80 EUR"
+    },
+    {
+        "id": 20,
+        "q": "I need the shipping cost for item 'ID-999'.",
+        "hops": 2,
+        "chain": [
+            "get_supplier_location",
+            "get_shipping_cost"
+        ],
+        "expected": "150 EUR"
+    },
+    {
+        "id": 21,
+        "q": "What is the combined stock count of Tires and Brakes?",
+        "hops": 4,
+        "chain": [
+            "get_part_id",
+            "get_stock_level",
+            "get_part_id",
+            "get_stock_level"
+        ],
+        "expected": "250"
+    },
+    {
+        "id": 22,
+        "q": "Which is more expensive to ship: Munich or Berlin?",
+        "hops": 2,
+        "chain": [
+            "get_shipping_cost",
+            "get_shipping_cost"
+        ],
+        "expected": "Berlin"
+    }
+]
