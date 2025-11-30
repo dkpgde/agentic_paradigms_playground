@@ -13,6 +13,7 @@ MODEL_NAME = "granite4:tiny-h"
 llm = ChatOllama(model=MODEL_NAME, temperature=0, num_ctx=10240)
 
 def inventory_node(state):
+    """Worker 1"""
     messages = state['messages']
     sys_msg = SystemMessage(content="""You are the Inventory Manager. Your sole purpose is to handle requests related to **Part IDs** and **Stock Levels**.
     
@@ -57,6 +58,7 @@ def inventory_node(state):
     return {"messages": [response]}
 
 def logistics_node(state):
+    """Worker 2"""
     messages = state['messages']
     sys_msg = SystemMessage(content="""You are the Logistics Manager. Your sole purpose is to handle requests related to **Supplier Locations** and **Shipping Costs**.
     
@@ -101,11 +103,13 @@ def logistics_node(state):
 all_tools = [get_part_id, get_stock_level, get_supplier_location, get_shipping_cost]
 tool_node = ToolNode(all_tools)
 
+
 class SupervisorState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
     next: str
 
 def supervisor_node(state: SupervisorState):
+    """Orchestrator"""
     messages = state['messages']
     last_user_message = messages[0].content
     
@@ -179,4 +183,4 @@ app = workflow.compile()
 def run_hierarchical_agent(query: str):
     initial_state = {"messages": [HumanMessage(content=query)]}
     result = app.invoke(initial_state, {"recursion_limit": 20})
-    return result["messages"][-1].content
+    return result["messages"][-1].content, result["messages"]

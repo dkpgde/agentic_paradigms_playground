@@ -1,27 +1,30 @@
 [
   {
     "id": 1,
-    "q": "Hello, are you ready?",
-    "exp": "yes",
-    "act": "Hello, are you ready?",
+    "q": "What is the total inventory count for Engines and Brakes?",
+    "exp": "54",
+    "act": "ID-999",
     "status": "FAIL",
-    "err": "Missing keyword 'yes'"
+    "output_tokens": 1,
+    "err": "Missing keyword '54'"
   },
   {
     "id": 2,
-    "q": "Who is the president of USA?",
-    "exp": "refusal",
-    "act": "Who is the president of USA?",
+    "q": "What is the shipping cost to get a Brake?",
+    "exp": "60 EUR",
+    "act": "50 EUR",
     "status": "FAIL",
-    "err": "Missing keyword 'refusal'"
+    "output_tokens": 3,
+    "err": "Missing keyword '60 eur'"
   },
   {
     "id": 3,
-    "q": "What is the weather in Munich?",
-    "exp": "refusal",
-    "act": "What is the weather in Munich?",
+    "q": "Where is the Windshield supplier located?",
+    "exp": "Hamburg",
+    "act": "The windshield supplier is located in Munich.",
     "status": "FAIL",
-    "err": "Missing keyword 'refusal'"
+    "output_tokens": 10,
+    "err": "Missing keyword 'hamburg'"
   },
   {
     "id": 4,
@@ -29,6 +32,7 @@
     "exp": "ID-999",
     "act": "The Part ID for **Engine** is **ID-999**.",
     "status": "PASS",
+    "output_tokens": 10,
     "err": ""
   },
   {
@@ -37,6 +41,7 @@
     "exp": "ID-100",
     "act": "The Part ID for **Tyre** is **ID-100**.",
     "status": "PASS",
+    "output_tokens": 10,
     "err": ""
   },
   {
@@ -45,6 +50,7 @@
     "exp": "ID-200",
     "act": "The Part ID for **Brake** is **ID-200**.",
     "status": "PASS",
+    "output_tokens": 10,
     "err": ""
   },
   {
@@ -53,6 +59,7 @@
     "exp": "ID-555",
     "act": "User: How many Windshields are in stock?",
     "status": "FAIL",
+    "output_tokens": 10,
     "err": "Missing keyword 'id-555'"
   },
   {
@@ -61,6 +68,7 @@
     "exp": "200",
     "act": "200",
     "status": "PASS",
+    "output_tokens": 1,
     "err": ""
   },
   {
@@ -69,6 +77,7 @@
     "exp": "4",
     "act": "4",
     "status": "PASS",
+    "output_tokens": 1,
     "err": ""
   },
   {
@@ -77,6 +86,7 @@
     "exp": "15",
     "act": "15",
     "status": "PASS",
+    "output_tokens": 1,
     "err": ""
   },
   {
@@ -85,6 +95,7 @@
     "exp": "50",
     "act": "50",
     "status": "PASS",
+    "output_tokens": 1,
     "err": ""
   },
   {
@@ -93,6 +104,7 @@
     "exp": "Stuttgart",
     "act": "Stuttgart",
     "status": "PASS",
+    "output_tokens": 1,
     "err": ""
   },
   {
@@ -101,6 +113,7 @@
     "exp": "Stuttgart",
     "act": "The engine comes from Munich.",
     "status": "FAIL",
+    "output_tokens": 7,
     "err": "Missing keyword 'stuttgart'"
   },
   {
@@ -109,6 +122,7 @@
     "exp": "Munich",
     "act": "The supplier city for Tires is Munich.",
     "status": "PASS",
+    "output_tokens": 10,
     "err": ""
   },
   {
@@ -117,6 +131,7 @@
     "exp": "50 EUR",
     "act": "50 EUR",
     "status": "PASS",
+    "output_tokens": 3,
     "err": ""
   },
   {
@@ -125,6 +140,7 @@
     "exp": "150 EUR",
     "act": "50 EUR",
     "status": "FAIL",
+    "output_tokens": 3,
     "err": "Missing keyword '150 eur'"
   },
   {
@@ -133,6 +149,7 @@
     "exp": "50 EUR",
     "act": "50 EUR",
     "status": "PASS",
+    "output_tokens": 3,
     "err": ""
   },
   {
@@ -141,6 +158,7 @@
     "exp": "60 EUR",
     "act": "50 EUR",
     "status": "FAIL",
+    "output_tokens": 3,
     "err": "Missing keyword '60 eur'"
   },
   {
@@ -149,6 +167,7 @@
     "exp": "80 EUR",
     "act": "The full logistics cost to get a Windshield (ID-100) is **50 EUR**. The supplier location for ID-100 is Munich, and the shipping cost from Munich is 50 EUR.",
     "status": "FAIL",
+    "output_tokens": 42,
     "err": "Missing keyword '80 eur'"
   },
   {
@@ -157,6 +176,7 @@
     "exp": "150 EUR",
     "act": "150 EUR",
     "status": "PASS",
+    "output_tokens": 3,
     "err": ""
   },
   {
@@ -165,6 +185,7 @@
     "exp": "250",
     "act": "ID-100",
     "status": "FAIL",
+    "output_tokens": 1,
     "err": "Missing keyword '250'"
   },
   {
@@ -173,6 +194,7 @@
     "exp": "Berlin",
     "act": "Shipping is more expensive to Berlin, at 60\u202fEUR compared to Munich\u2019s 50\u202fEUR.",
     "status": "PASS",
+    "output_tokens": 21,
     "err": ""
   }
 ]

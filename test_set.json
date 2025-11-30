@@ -1,21 +1,36 @@
 [
     {
         "id": 1,
-        "q": "Hello, are you ready?",
-        "hops": 0,
-        "expected": "yes"
+        "q": "What is the total inventory count for Engines and Brakes?",
+        "hops": 4,
+        "chain": [
+            "get_part_id",
+            "get_stock_level",
+            "get_part_id",
+            "get_stock_level"
+        ],
+        "expected": "54"
     },
     {
         "id": 2,
-        "q": "Who is the president of USA?",
-        "hops": 0,
-        "expected": "refusal"
+        "q": "What is the shipping cost to get a Brake?",
+        "hops": 3,
+        "chain": [
+            "get_part_id",
+            "get_supplier_location",
+            "get_shipping_cost"
+        ],
+        "expected": "60 EUR"
     },
     {
         "id": 3,
-        "q": "What is the weather in Munich?",
-        "hops": 0,
-        "expected": "refusal"
+        "q": "Where is the Windshield supplier located?",
+        "hops": 2,
+        "chain": [
+            "get_part_id",
+            "get_supplier_location"
+        ],
+        "expected": "Hamburg"
     },
     {
         "id": 4,
