@@ -37,7 +37,7 @@ def count_tokens(input_data) -> int:
 
 
 if __name__ == "__main__":
-    with open('test_set.json', 'r') as f: TEST_SET = json.load(f)
+    with open('../test/test_set.json', 'r') as f: TEST_SET = json.load(f)
 
     print(f"Benchmark on {len(TEST_SET)} questions...")
     print("-" * 100)

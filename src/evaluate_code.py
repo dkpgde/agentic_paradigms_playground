@@ -6,7 +6,7 @@ import requests
 from langchain_core.messages import SystemMessage, HumanMessage
 from mcp_client import mcp_server_context
 
-ANSWERS_FILE = "answers_code_qwen.json"
+ANSWERS_FILE = "../test/answers_code_qwen.json"
 MODEL_NAME = "qwen2.5:14B"
 OLLAMA_TOKENIZE_URL = "http://localhost:11434/api/tokenize"
 
@@ -37,7 +37,7 @@ def count_tokens(text: str) -> int:
         return len(str(text).split()) * 1.5
 
 def load_test_cases():
-    with open('test_set.json', 'r') as f: return json.load(f)
+    with open('../test/test_set.json', 'r') as f: return json.load(f)
 
 def log_debug(logs, case, actual, status, duration, input_tokens, output_tokens):
     previous_total = sum(item.get("duration_seconds", 0) for item in logs)

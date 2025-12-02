@@ -10,10 +10,10 @@ from benchmark import count_tokens
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("Eval")
 
-ANSWERS_FILE = "answers_orchestration.json"
+ANSWERS_FILE = "../test/answers_orchestration.json"
 
 def load_test_cases():
-    with open('test_set.json', 'r') as f: return json.load(f)
+    with open('../test/test_set.json', 'r') as f: return json.load(f)
 
 def log_debug(case, actual, status, output_tokens=0, duration=0.0, msg=""):
     """Writes down the answers with timing metrics"""
