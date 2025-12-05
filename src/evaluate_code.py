@@ -5,6 +5,7 @@ import os
 import requests
 import sys
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+
 from mcp_client import mcp_server_context
 
 SYSTEM_PROMPT = """You are an expert SCM Python Engineer.
@@ -23,8 +24,8 @@ STRATEGY:
 3. Use `print()` to output the final answer.
 """
 
-ANSWERS_FILE = "../test/answers_code_granite.json"
-MODEL_NAME = "granite4:tiny-h"
+ANSWERS_FILE = "../test/answers_code_qwen.json"
+MODEL_NAME = "qwen2.5:14B"
 
 def load_test_cases():
     with open('../test/test_set.json', 'r') as f: return json.load(f)
@@ -45,13 +46,28 @@ def log_debug(logs, case, actual, status, duration, input_tokens, output_tokens,
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
         "total_tokens": total_tokens,
-        "cumulative_total_tokens": total_accumulated_tokens, # New field
+        "cumulative_total_tokens": total_accumulated_tokens,
         "duration_seconds": round(duration, 2),
         "cumulative_time_seconds": round(total_accumulated_time, 2)
     }
     
     logs.append(entry)
     with open(ANSWERS_FILE, 'w') as f: json.dump(logs, f, indent=2)
+
+def calculate_tokens(messages):
+    """Helper to sum tokens from a list of messages."""
+    calc_input_tokens = 0
+    calc_output_tokens = 0
+    calc_total_tokens = 0
+
+    for msg in messages:
+        if isinstance(msg, AIMessage):
+            meta = msg.usage_metadata or {}
+            calc_input_tokens += meta.get("input_tokens", 0)
+            calc_output_tokens += meta.get("output_tokens", 0)
+            calc_total_tokens += meta.get("total_tokens", 0)
+            
+    return calc_input_tokens, calc_output_tokens, calc_total_tokens
 
 async def run_evaluation():
     # --- 1. Determine Start ID ---
@@ -103,30 +119,23 @@ async def run_evaluation():
                 HumanMessage(content=case["q"])
             ]
             
+            # Helper to stream and capture history for timeout recovery
+            current_history = []
+            
+            async def consume_stream():
+                nonlocal current_history
+                async for chunk in agent.astream({"messages": messages}, stream_mode="values"):
+                    current_history = chunk["messages"]
+                return current_history
+
             try:
-                # Agent invoke
-                result = await agent.ainvoke({"messages": messages})
+                # Agent invoke with 300 second timeout
+                history = await asyncio.wait_for(consume_stream(), timeout=300.0)
                 duration = time.time() - start
                 
-                # --- Token Counting Logic (Metadata Based) ---
-                history = result["messages"]
+                # Success path token calculation
+                i_tok, o_tok, t_tok = calculate_tokens(history)
                 
-                calc_input_tokens = 0
-                calc_output_tokens = 0
-                calc_total_tokens = 0
-
-                # Sum usage from all AI messages (intermediate steps + final answer)
-                for msg in history:
-                    if isinstance(msg, AIMessage):
-                        meta = msg.usage_metadata or {}
-                        calc_input_tokens += meta.get("input_tokens", 0)
-                        calc_output_tokens += meta.get("output_tokens", 0)
-                        calc_total_tokens += meta.get("total_tokens", 0)
-                
-                # Fallback if metadata is missing (e.g. older Ollama versions)
-                if calc_total_tokens == 0:
-                    print("Warning: usage_metadata missing. Counts may be 0.")
-
                 final_msg = history[-1]
                 final_out = str(final_msg.content)
                 
@@ -139,11 +148,18 @@ async def run_evaluation():
                 elif "refusal" in exp and any(x in final_out.lower() for x in ["cannot", "sorry", "scope", "unable"]):
                     status = "PASS (Refusal)"
                 
-                print(f"   -> {status} (Time: {duration:.2f}s | Tokens: {calc_total_tokens})")
+                print(f"   -> {status} (Time: {duration:.2f}s | Tokens: {t_tok})")
+                log_debug(logs, case, final_out, status, duration, i_tok, o_tok, t_tok)
+            
+            except asyncio.TimeoutError:
+                # Timeout path token calculation (using partial history)
+                i_tok, o_tok, t_tok = calculate_tokens(current_history)
                 
-                log_debug(logs, case, final_out, status, duration, calc_input_tokens, calc_output_tokens, calc_total_tokens)
+                print(f"   -> CRASH: Timeout (>300s) | Partial Tokens: {t_tok}")
+                log_debug(logs, case, "Timeout: Execution exceeded 300 seconds", "CRASH", 300.0, i_tok, o_tok, t_tok)
                 
             except Exception as e:
+                # General crash (usually 0 tokens unless we want to track partial here too, but riskier)
                 print(f"   -> CRASH: {e}")
                 log_debug(logs, case, str(e), "CRASH", 0, 0, 0, 0)
 

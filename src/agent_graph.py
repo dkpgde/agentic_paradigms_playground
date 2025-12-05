@@ -7,6 +7,7 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, System
 from langchain_ollama import ChatOllama
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
+
 from tools import get_part_id, get_shipping_cost, get_stock_level, get_supplier_location
 
 MODEL_NAME = "granite4:tiny-h" 
@@ -102,7 +103,6 @@ def logistics_node(state):
 
 all_tools = [get_part_id, get_stock_level, get_supplier_location, get_shipping_cost]
 tool_node = ToolNode(all_tools)
-
 
 class SupervisorState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
