@@ -1,7 +1,8 @@
 import json
 import logging
 import os
-import time  # Added import
+import time
+
 import pytest
 
 from agent_graph import run_hierarchical_agent
@@ -23,7 +24,6 @@ def log_debug(case, actual, status, output_tokens=0, duration=0.0, msg=""):
             with open(ANSWERS_FILE, 'r') as f: logs = json.load(f)
         except: pass
     
-    # Calculate total time so far (sum of previous durations + current)
     previous_total = sum(item.get("duration_seconds", 0) for item in logs)
     total_accumulated = previous_total + duration
 
@@ -34,8 +34,8 @@ def log_debug(case, actual, status, output_tokens=0, duration=0.0, msg=""):
         "act": actual, 
         "status": status,
         "output_tokens": output_tokens,
-        "duration_seconds": round(duration, 2),        # Specific time per question
-        "cumulative_time_seconds": round(total_accumulated, 2), # Total time running count
+        "duration_seconds": round(duration, 2),       
+        "cumulative_time_seconds": round(total_accumulated, 2), 
         "err": msg
     }
     
@@ -53,7 +53,7 @@ def test_supervisor_agent(case):
     
     final_out = ""
     out_tokens = 0
-    start_time = time.time() # Start timer
+    start_time = time.time()
     
     try:
         final_out, history = run_hierarchical_agent(case["q"])
@@ -63,7 +63,7 @@ def test_supervisor_agent(case):
         log_debug(case, str(e), "CRASH", 0, duration, str(e))
         pytest.fail(f"Agent Crashed: {e}")
 
-    duration = time.time() - start_time # End timer
+    duration = time.time() - start_time
     exp = case["expected"].lower()
     
     if exp in final_out.lower():

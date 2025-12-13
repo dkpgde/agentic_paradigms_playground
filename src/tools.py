@@ -2,11 +2,9 @@ import difflib
 import logging
 import re
 
-# Setup Logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(message)s')
 logger = logging.getLogger("SCM_Tools")
 
-#  Database 
 DB_PARTS = {"Engine": "ID-999", "Tyre": "ID-100", "Windshield": "ID-555", "Brake": "ID-200"}
 DB_STOCK = {"ID-999": 4, "ID-100": 200, "ID-555": 15, "ID-200": 50}
 DB_SUPPLIERS = {"ID-999": "Stuttgart", "ID-100": "Munich", "ID-555": "Hamburg", "ID-200": "Berlin"}

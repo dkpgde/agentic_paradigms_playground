@@ -1,9 +1,11 @@
-import sys
-import os
-import logging
-import io
 import contextlib
+import io
+import logging
+import os
+import sys
 import traceback
+
+from mcp.server.fastmcp import FastMCP
 
 sys.stdout.reconfigure(line_buffering=True)
 sys.stderr.reconfigure(line_buffering=True)
@@ -13,7 +15,6 @@ logger = logging.getLogger("SCM_Server")
 
 sys.path.append(os.getcwd())
 
-from mcp.server.fastmcp import FastMCP
 try:
     from tools import get_part_id, get_stock_level, get_supplier_location, get_shipping_cost
 except ImportError as e:
@@ -21,6 +22,8 @@ except ImportError as e:
     sys.exit(1)
 
 mcp = FastMCP("SCM_Logistics_Server")
+
+# inventory tools
 
 @mcp.tool()
 def find_part_id(part_name: str) -> str:
@@ -43,6 +46,8 @@ def check_stock(part_id: str) -> str:
     """
     return get_stock_level(part_id)
 
+# logistics tools
+
 @mcp.tool()
 def find_supplier_city(part_id: str) -> str:
     """
@@ -62,6 +67,8 @@ def calculate_shipping(city: str) -> str:
         city: The name of the city (e.g., "Stuttgart", "Berlin").
     """
     return get_shipping_cost(city)
+
+# code tool
 
 @mcp.tool()
 def execute_python_code(code: str) -> str:

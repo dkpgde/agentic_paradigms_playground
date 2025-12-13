@@ -1,10 +1,11 @@
-import json
-import time
 import asyncio
+import json
 import os
 import requests
 import sys
-from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+import time
+
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from mcp_client import mcp_server_context
 
@@ -70,7 +71,6 @@ def calculate_tokens(messages):
     return calc_input_tokens, calc_output_tokens, calc_total_tokens
 
 async def run_evaluation():
-    # --- 1. Determine Start ID ---
     start_id = 1
     if len(sys.argv) > 1:
         try:
@@ -83,7 +83,7 @@ async def run_evaluation():
     cases = load_test_cases()
     logs = []
 
-    # --- 2. Load and Filter Existing Logs ---
+    # Load and Filter Existing Logs
     if os.path.exists(ANSWERS_FILE):
         try:
             with open(ANSWERS_FILE, 'r') as f:
@@ -100,7 +100,7 @@ async def run_evaluation():
             print("Could not parse existing answers file. Starting fresh.")
             logs = []
     
-    # --- 3. Filter Cases to Run ---
+    # Filter Cases to Run
     cases_to_run = [c for c in cases if c['id'] >= start_id]
     
     if not cases_to_run:
@@ -119,7 +119,7 @@ async def run_evaluation():
                 HumanMessage(content=case["q"])
             ]
             
-            # Helper to stream and capture history for timeout recovery
+            # helps capture tokens used even if it fails
             current_history = []
             
             async def consume_stream():
@@ -129,37 +129,33 @@ async def run_evaluation():
                 return current_history
 
             try:
-                # Agent invoke with 300 second timeout
+                # success path for testing
                 history = await asyncio.wait_for(consume_stream(), timeout=300.0)
                 duration = time.time() - start
                 
-                # Success path token calculation
                 i_tok, o_tok, t_tok = calculate_tokens(history)
                 
                 final_msg = history[-1]
                 final_out = str(final_msg.content)
                 
-                # Validation Logic
                 exp = case["expected"].lower()
                 status = "FAIL"
                 
                 if exp in final_out.lower():
                     status = "PASS"
-                elif "refusal" in exp and any(x in final_out.lower() for x in ["cannot", "sorry", "scope", "unable"]):
-                    status = "PASS (Refusal)"
                 
                 print(f"   -> {status} (Time: {duration:.2f}s | Tokens: {t_tok})")
                 log_debug(logs, case, final_out, status, duration, i_tok, o_tok, t_tok)
             
             except asyncio.TimeoutError:
-                # Timeout path token calculation (using partial history)
+                # timeout failure path for testing with token calculation
                 i_tok, o_tok, t_tok = calculate_tokens(current_history)
                 
                 print(f"   -> CRASH: Timeout (>300s) | Partial Tokens: {t_tok}")
                 log_debug(logs, case, "Timeout: Execution exceeded 300 seconds", "CRASH", 300.0, i_tok, o_tok, t_tok)
                 
             except Exception as e:
-                # General crash (usually 0 tokens unless we want to track partial here too, but riskier)
+                # probably 0 tokens if it crashes for reasons other than timeout
                 print(f"   -> CRASH: {e}")
                 log_debug(logs, case, str(e), "CRASH", 0, 0, 0, 0)
 

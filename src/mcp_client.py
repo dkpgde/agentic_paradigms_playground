@@ -1,25 +1,24 @@
 import asyncio
-import sys
-import os
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Annotated, TypedDict, Type, Any
+import os
+import sys
+from typing import Annotated, Any, AsyncGenerator, Type, TypedDict
 
-from pydantic import BaseModel, Field, create_model
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langchain_core.tools import StructuredTool
 from langchain_ollama import ChatOllama
-
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
-
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+from pydantic import BaseModel, create_model, Field
 
 MODEL_NAME = "qwen2.5:14B"
 SERVER_SCRIPT = "mcp_server.py"
 
 def jsonschema_to_pydantic(name: str, schema: dict) -> Type[BaseModel]:
+    """MCP json schema to Pydantic"""
     fields = {}
     properties = schema.get("properties", {})
     required = schema.get("required", [])
@@ -48,6 +47,7 @@ class AgentState(TypedDict):
 
 @asynccontextmanager
 async def mcp_server_context(mode: str = "standard") -> AsyncGenerator:
+    """Connect to server, wrap and add tools"""
     if not os.path.exists(SERVER_SCRIPT):
         raise FileNotFoundError(f"Server script not found: {SERVER_SCRIPT}")
 

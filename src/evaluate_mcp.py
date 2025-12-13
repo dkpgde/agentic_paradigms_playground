@@ -1,15 +1,15 @@
-import json
-import time
 import asyncio
+import json
 import os
-# requests is no longer needed for token counting
-from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+import time
+
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+
 from mcp_client import mcp_server_context
 
 ANSWERS_FILE = "../test/answers_mcp_qwen.json"
 MODEL_NAME = "qwen2.5:14B"
 
-# REVISED SYSTEM PROMPT
 SYSTEM_PROMPT = """You are an expert SCM Assistant. 
 You have access to specific tools to find Part IDs, check stock, and calculate shipping.
 
@@ -24,11 +24,9 @@ def load_test_cases():
     with open('../test/test_set.json', 'r') as f: return json.load(f)
 
 def log_debug(logs, case, actual, status, duration, input_tokens, output_tokens, total_tokens):
-    # Calculate Cumulative Time
     previous_total_time = sum(item.get("duration_seconds", 0) for item in logs)
     total_accumulated_time = previous_total_time + duration
 
-    # Calculate Cumulative Tokens
     previous_total_tokens = sum(item.get("total_tokens", 0) for item in logs)
     total_accumulated_tokens = previous_total_tokens + total_tokens
 
@@ -56,7 +54,6 @@ async def run_evaluation():
     
     print(f"Evaluating {len(cases)} cases against MCP Agent ({MODEL_NAME})...")
     
-    # Default is mode="standard"
     async with mcp_server_context(mode="standard") as agent:
         for case in cases:
             print(f"\nRunning Q{case['id']}: {case['q']}")
@@ -68,18 +65,15 @@ async def run_evaluation():
             ]
             
             try:
-                # Agent invoke
                 result = await agent.ainvoke({"messages": messages})
                 duration = time.time() - start
 
-                # --- Token Counting Logic (Metadata Based) ---
                 history = result["messages"]
                 
                 calc_input_tokens = 0
                 calc_output_tokens = 0
                 calc_total_tokens = 0
 
-                # Sum usage from all AI messages (intermediate tool calls + final answer)
                 for msg in history:
                     if isinstance(msg, AIMessage):
                         meta = msg.usage_metadata or {}
@@ -93,7 +87,6 @@ async def run_evaluation():
                 final_msg = history[-1]
                 final_out = str(final_msg.content)
                 
-                # Validation Logic
                 exp = case["expected"].lower()
                 status = "FAIL"
                 
